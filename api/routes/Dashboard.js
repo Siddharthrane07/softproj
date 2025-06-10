@@ -1,0 +1,6 @@
+import express from 'express';
+import {db} from '../db.js';
+
+export const dashboardRoutes = (req,res) =>{
+    
+}
