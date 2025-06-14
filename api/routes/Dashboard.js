@@ -1,6 +1,9 @@
 import express from 'express';
 import {db} from '../db.js';
+import { newAddProject } from '../controllers/newproject.js';
 
-export const dashboardRoutes = (req,res) =>{
-    
-}
+const router = express.Router(); 
+
+router.post('/dashboardproject',newAddProject)
+
+export const dashboardRoutes = router;

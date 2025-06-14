@@ -4,7 +4,7 @@ export const db = mysql.createPool({
     host:"localhost",
     user:"root",
     password:"Sidz07@rane",
-    database:"softcode",
+    database:"codesoft",
     // multipleStatements: true,
     
 })
