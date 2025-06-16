@@ -1,50 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './pages/login/login.jsx';
-import Dashboard from './pages/Dashboard/Dashboard.jsx';
-import Navbar from './components/navbar/Navbar.jsx';
-import { AuthContext } from './context/AuthContext.jsx';
-import { Navigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-
+import "./App.css";
+import Login from "./pages/login/login.jsx";
+import Dashboard from "./pages/Dashboard/Dashboard.jsx";
+import { AuthContext } from "./context/AuthContext.jsx";
+import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import ProjectDetails from "./pages/ProjectDetails/projectDetails.jsx";
 
 function App() {
-  const {currentUser} = useContext(AuthContext);
+  const { currentUser, loading } = useContext(AuthContext);
+
   const ProtectedRoute = ({ children }) => {
-  // const { currentUser } = useAuth();
-  
-  if (!currentUser) {
-    return <Navigate to="/login" />;
-  }
-  return children;
-};
+    if (!currentUser) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  };
+
+  // 👇 Wait for context to finish loading
+  if (loading) return <div>Loading...</div>;
+
+  const router = createBrowserRouter([
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/dashboard",
+      element: (
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/project/:projectId",
+      element: (
+        <ProtectedRoute>
+          <ProjectDetails />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/",
+      element: <Navigate to="/dashboard" />,
+    },
+  ]);
+
   return (
-    <Router>
-  
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
-  );  
+    <div>
+      <RouterProvider router={router} />
+    </div>
+  );
+
 
   // return (
   //   <div className="App">

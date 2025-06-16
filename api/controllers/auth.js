@@ -36,20 +36,34 @@ export const login = (req,res) =>{
         const checkPassword = bcrypt.compareSync(req.body.pswd,data[0].password)
         if(!checkPassword) return res.status(400).json("Wrong password or name")
 
-const {password,...others} = data[0]
+        const {password, ...others} = data[0]
+        const token = jwt.sign({id: data[0].id}, "secretkey")
 
-    const token = jwt.sign({id:data[0].id},"secretkey")
-    res.cookie("accessToken",token,{
-        httpOnly:true
-    }).status(200).json(others);
+        // ✅ Send token in HTTP-only cookie only
+        res.cookie("accessToken", token, {
+            httpOnly: true,
+            secure: false, // set to true in production with HTTPS
+            sameSite: "strict"
+        }).status(200).json(others) // send only user data
     })
 }
 
+export const verifyToken = (req, res, next) => {
+  const token = req.cookies.accessToken;
 
-export const logout = (req,res) =>{
-    res.clearCookie("accessToken",{
-        secure:true,
-        sameSite:"none"
-    }).status(200).json("User has been logged out")
+  if (!token) return res.status(401).json("Not authenticated!");
 
-}
+  jwt.verify(token, "secretkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+    req.user = userInfo;
+    next();
+  });
+};
+
+export const logout = (req, res) => {
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: false, 
+    sameSite: "strict",
+  }).status(200).json("User has been logged out");
+};

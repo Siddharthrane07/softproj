@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState,useContext } from "react";
 
 export const AuthContext = createContext();
 
@@ -15,24 +15,25 @@ export const AuthContextProvider = ({ children }) => {
     }
   });
 
-  const login = async (userData) => {
-    try {
-      const res = await axios.post("http://localhost:8800/api/auth/login", userData, {
-        withCredentials: true,
-      });
-      setCurrentUser(res.data);
-    } catch (error) {
-      console.error("Login failed:", error);
-      throw error; // still throw if you want to catch it in the component
-    }
-  };
+const login = async (userData) => {
+  try {
+    const res = await axios.post("http://localhost:8800/api/auth/login", userData, {
+      withCredentials: true, // ✅ Important
+    });
+    setCurrentUser(res.data); // only user info, no token now
+  } catch (error) {
+    console.error("Login failed:", error);
+    throw error;
+  }
+};
+
 
 
   useEffect(() => {
-    try {
-      localStorage.setItem("user", JSON.stringify(currentUser));
-    } catch (error) {
-      console.error("Failed to save user to localStorage:", error);
+    // Set axios default header when user changes
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
   }, [currentUser]);
 
