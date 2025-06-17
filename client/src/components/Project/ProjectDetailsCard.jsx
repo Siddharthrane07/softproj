@@ -25,7 +25,7 @@ const ProjectForm = ({onClose,onSubmit} ) =>{
         e.preventDefault();
             const taskData = {
               ...form,
-            projectId  // ✅ Injecting projectId into payload
+            projectId  // 
           };
           await axios.post("http://localhost:8800/api/project/projectdetails", taskData, {
           withCredentials: true,

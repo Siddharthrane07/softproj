@@ -34,8 +34,7 @@
   
   .form-container button {
     margin-top: 10px;
-    padding: 10px;
-    background-color: #2f80ed;
+    background-color: #424242;
     color: white;
     border: none;
     border-radius: 6px;
@@ -55,7 +54,7 @@
   .new-project-btn {
     margin: 16px;
     padding: 10px 20px;
-    background-color: #1e90ff;
+    background-color: #424242;
     color: white;
     border: none;
     border-radius: 6px;

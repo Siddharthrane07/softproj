@@ -39,3 +39,23 @@ export const addTask = (req, res) => {
       res.status(200).json(data);
     });
   };
+
+  export const updateTask = (req, res) => {
+    const taskId = req.params.taskId;
+    const q = `UPDATE tasks SET title=?, description=?, person=?, deadline=?, priority=?, status=?
+    WHERE id=?`;
+    const values = [
+    req.body.title,
+    req.body.description,
+    req.body.person,
+    req.body.deadline,
+    req.body.priority,
+    req.body.status,
+    taskId
+    ];
+    db.query(q,values,(err) =>{
+      if(err) return res.status(500).json(err);
+      res.status(200).json("Task updated")
+    })
+  }
+

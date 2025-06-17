@@ -3,10 +3,12 @@ import axios from 'axios';
 import './kanban.css';
 import { useParams } from 'react-router-dom';
 import { User, Calendar } from 'lucide-react';
+import EditModal from './EditModel.js'
 
 const KanbanBoard = () => {
   const { projectId } = useParams();
   const [tasks, setTasks] = useState([]);
+  const [editTask, setEditTask] = useState(null);
 
   const fetchTasks = async () => {
     try {
@@ -22,6 +24,24 @@ const KanbanBoard = () => {
   useEffect(() => {
     fetchTasks();
   }, [projectId]);
+  
+  const handleEdit = (task) => {
+    setEditTask(task);
+  };
+
+  const handleSaveEdit = async (updatedTask) => {
+    try {
+      await axios.put(`http://localhost:8800/api/project/projectdetails/${updatedTask.id}`, updatedTask, {
+        withCredentials: true,
+      });
+      setEditTask(null);
+      fetchTasks();
+    } catch (err) {
+      console.error("Error updating task:", err);
+    }
+  };
+
+
 
   const columns = {
     todo: "To Do",
@@ -37,7 +57,7 @@ const KanbanBoard = () => {
         <div key={key} className="kanban-column">
           <h3 className="kanban-column-title">{label}</h3>
           {getColumnTasks(key).map(task => (
-            <div className="task-card" key={task.id}>
+            <div className="task-card" key={task.id} onClick={() => handleEdit(task)}>
               <div className="task-card-header">
                 <h4 className="task-card-title">{task.title}</h4>
                 <span className={`task-card-priority priority-${task.priority?.toLowerCase()}`}>
@@ -61,6 +81,14 @@ const KanbanBoard = () => {
           ))}
         </div>
       ))}
+
+      {editTask && (
+        <EditModal
+          task={editTask}
+          onClose={() => setEditTask(null)}
+          onSave={handleSaveEdit}
+        />
+      )}
     </div>
   );
 };

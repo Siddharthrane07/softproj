@@ -19,10 +19,7 @@ const ProjectDetails = () => {
       
       <div className="project-details-container">
         <div className="project-details-header">
-          <button className="back-button" >
-            <ArrowLeft size={16} />
-            <span>Back to Dashboard</span>
-          </button>
+
           
           <div className="project-header-content">
             <div className="project-info">
@@ -48,9 +45,6 @@ const ProjectDetails = () => {
                 />
               )}
 
-              <button className="settings-btn">
-                <Settings size={16} />
-              </button>
             </div>
           </div>
 
